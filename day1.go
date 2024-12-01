@@ -74,7 +74,9 @@ func main() {
 
 	}
 
+	// star 1
 	fmt.Printf("\n Total distance: %v\n", total_distance)
 
+	// star 2
 	fmt.Printf("Total similarity: %v\n", total_similarity)
 }
