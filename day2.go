@@ -10,7 +10,7 @@ import (
 
 func main() {
 	var arrayRows [][]int
-	var safeCount int
+	safeCount := 0
 
 	fmt.Printf("Input: \n")
 
@@ -45,34 +45,34 @@ func main() {
 		isSafe := true
 		currentRow := arrayRows[i]
 
-		fmt.Println("Processing row:", currentRow)
-
 		ascendingCheck := isSortedAscendingAndOneElementOut(currentRow)
+		fmt.Printf("ascending order: %v\n", ascendingCheck)
 		descendingCheck := isSortedDescendingAndOneElementOut(currentRow)
-		fmt.Println("Is sorted ascending with one element out?", ascendingCheck)
-		fmt.Println("Is sorted descending with one element out?", descendingCheck)
+		fmt.Printf("descending order: %v\n", descendingCheck)
 
-		if isSortedAscendingAndOneElementOut(currentRow) || isSortedDescendingAndOneElementOut(currentRow) {
-			for j := 0; j < len(currentRow)-1; j++ {
-
-				diff := currentRow[j] - currentRow[j+1]
-
-				fmt.Printf("Difference between %d and %d: %d\n", currentRow[j], currentRow[j+1], diff)
-
-				if diff < -3 || diff > 3 || diff == 0 {
+		if ascendingCheck != nil {
+			for j := 0; j < len(ascendingCheck)-1; j++ {
+				diff := ascendingCheck[j+1] - ascendingCheck[j] // Ascending difference
+				if diff > 3 || diff < 1 {
+					isSafe = false
+					break
+				}
+			}
+		} else if descendingCheck != nil {
+			for j := 0; j < len(descendingCheck)-1; j++ {
+				diff := descendingCheck[j] - descendingCheck[j+1] // Descending difference
+				if diff > 3 || diff < 1 {
 					isSafe = false
 					break
 				}
 			}
 		} else {
 			isSafe = false
+			fmt.Printf("Row %d is unsafe: %v\n", i, currentRow)
 		}
 
 		if isSafe {
-			fmt.Println("Row is safe")
 			safeCount++
-		} else {
-			fmt.Println("Row is unsafe")
 		}
 	}
 
@@ -80,60 +80,52 @@ func main() {
 	fmt.Println(safeCount)
 }
 
-func isSortedAscending(rowList []int) bool {
+func isSortedAscending(rowList []int) []int {
 	for i := 0; i < len(rowList)-1; i++ {
 		if rowList[i] >= rowList[i+1] {
-			return false
+			return nil
 		}
 	}
-	return true
+	return rowList
 }
 
-func isSortedDescending(rowList []int) bool {
+func isSortedDescending(rowList []int) []int {
 	for i := 0; i < len(rowList)-1; i++ {
 		if rowList[i] <= rowList[i+1] {
-			return false
+			return nil
 		}
 	}
-	return true
+	return rowList
 }
 
-func isSortedAscendingAndOneElementOut(rowList []int) bool {
-	if isSortedAscending(rowList) {
-		return true
+func isSortedAscendingAndOneElementOut(rowList []int) []int {
+	if isSortedAscending(rowList) != nil {
+		return rowList
 	}
-
-	fmt.Println("Row is not sorted, checking for removals...")
 
 	for i := 0; i < len(rowList); i++ {
 		modifiedRow := append([]int{}, rowList[:i]...)
 		modifiedRow = append(modifiedRow, rowList[i+1:]...)
-		fmt.Println("Modified row after removing index", i, ":", modifiedRow)
 
-		if isSortedAscending(modifiedRow) {
-			fmt.Println("Modified row is sorted ascending.")
-			return true
+		if isSortedAscending(modifiedRow) != nil {
+			return modifiedRow
 		}
 	}
-	return false
+	return nil
 }
 
-func isSortedDescendingAndOneElementOut(rowList []int) bool {
-	if isSortedDescending(rowList) {
-		return true
+func isSortedDescendingAndOneElementOut(rowList []int) []int {
+	if isSortedDescending(rowList) != nil {
+		return rowList
 	}
-
-	fmt.Println("Row is not sorted, checking for removals...")
 
 	for i := 0; i < len(rowList); i++ {
 		modifiedRow := append([]int{}, rowList[:i]...)
 		modifiedRow = append(modifiedRow, rowList[i+1:]...)
-		fmt.Println("Modified row after removing index", i, ":", modifiedRow)
 
-		if isSortedDescending(modifiedRow) {
-			fmt.Println("Modified row is sorted descending.")
-			return true
+		if isSortedDescending(modifiedRow) != nil {
+			return modifiedRow
 		}
 	}
-	return false
+	return nil
 }
