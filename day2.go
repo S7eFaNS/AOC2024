@@ -98,6 +98,7 @@ func isSortedDescending(rowList []int) []int {
 	return rowList
 }
 
+// star #2
 func isSortedAscendingAndOneElementOut(rowList []int) []int {
 	if isSortedAscending(rowList) != nil {
 		return rowList
